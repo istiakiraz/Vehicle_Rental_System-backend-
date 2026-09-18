@@ -103,14 +103,100 @@ const getAllBooking = async (user_id: number, role: string) => {
 
         WHERE b.customer_id = $1
 
-      ` , [user_id]
+      `,
+      [user_id],
     );
   }
 
-  return result
+  return result;
+};
+
+const updateBooking = async (
+  id: string,
+  status: string,
+  user_id: number,
+  role: string,
+) => {
+  const bookingResult = await pool.query(
+    `
+    SELECT * FROM bookings WHERE id =$1
+    `,
+    [id],
+  );
+
+  if (bookingResult.rows.length === 0) {
+    return null;
+  }
+
+  const booking = bookingResult.rows[0];
+
+  if (role === "customer") {
+    if (booking.customer_id !== user_id) {
+      throw new Error("You can update only your own booking");
+    }
+
+    if (status !== "cancelled") {
+      throw new Error("Customers can only cancel bookings");
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE bookings SET status = $1 WHERE id =$2  RETURNING
+        id,
+        customer_id,
+        vehicle_id,
+        rent_start_date,
+        rent_end_date,
+        total_price,
+        status 
+      `,
+      [status, id],
+    );
+
+    return result.rows[0];
+  }
+
+  if (role === "admin") {
+    if (status !== "returned") {
+      throw new Error("Admin can only mark booking as returned");
+    }
+
+    const bookingUpdate = await pool.query(
+      `
+      UPDATE bookings
+      SET status = $1
+      WHERE id = $2
+      RETURNING
+        id,
+        customer_id,
+        vehicle_id,
+        rent_start_date,
+        rent_end_date,
+        total_price,
+        status
+      `,
+      [status, id],
+    );
+
+    const vehicleUpdate = await pool.query(
+      `
+      UPDATE vehicles
+      SET availability_status = 'available'
+      WHERE id = $1
+      RETURNING availability_status
+      `,
+      [booking.vehicle_id],
+    );
+
+    return {
+      ...bookingUpdate.rows[0],
+      vehicle: vehicleUpdate.rows[0],
+    };
+  }
 };
 
 export const bookingServices = {
   createBooking,
-  getAllBooking
+  getAllBooking,
+  updateBooking
 };

@@ -52,7 +52,51 @@ const getAllBooking = async (req: Request, res: Response) => {
   }
 };
 
+const updateBooking = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    const loggedInUser = req.user;
+
+    if (!loggedInUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const result = await bookingServices.updateBooking(
+      id as string,
+      status,
+      loggedInUser.id,
+      loggedInUser.role,
+    );
+
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message:
+        status === "cancelled"
+          ? "Booking cancelled successfully"
+          : "Booking marked as returned. Vehicle is now available",
+      data: result,
+    });
+  } catch (err: any) {
+    return res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 export const bookingController = {
   createBooking,
-  getAllBooking
+  getAllBooking,
+  updateBooking
 };
