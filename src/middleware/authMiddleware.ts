@@ -27,6 +27,9 @@ const auth = (...roles: AuthUser["role"][]) => {
 
       const decoded = jwt.verify(token, config.jwtSecret) as AuthUser;
 
+
+      console.log("Decoded JWT:", decoded);
+
       req.user = decoded;
 
       if (roles.length && !roles.includes(decoded.role)) {
@@ -45,3 +48,6 @@ const auth = (...roles: AuthUser["role"][]) => {
     }
   };
 };
+
+
+export default auth;
