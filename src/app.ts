@@ -3,6 +3,7 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import initDB from "./config/db";
 import { vehicleRoutes } from "./modules/vehicle/vehicle.routes";
 import { userRoute } from "./modules/user/user.routers";
+import { bookingRoutes } from "./modules/booking/booking.routers";
 
 const app = express();
 
@@ -24,7 +25,11 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/vehicles", vehicleRoutes);
 
 // user route
-app.use("/api/v1/users", userRoute)
+app.use("/api/v1/users", userRoute);
+
+// bookings route
+
+app.use("/api/v1/bookings", bookingRoutes);
 
 // <------------- not found route ------------>
 app.use((req: Request, res: Response) => {

@@ -28,7 +28,7 @@ const auth = (...roles: AuthUser["role"][]) => {
       const decoded = jwt.verify(token, config.jwtSecret) as AuthUser;
 
 
-      console.log("Decoded JWT:", decoded);
+      // console.log("Decoded JWT:", decoded);
 
       req.user = decoded;
 
