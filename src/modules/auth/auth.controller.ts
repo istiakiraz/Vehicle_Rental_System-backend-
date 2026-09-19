@@ -39,7 +39,15 @@ const loginUser = async (req: Request, res: Response) => {
   }
 };
 
+const signOut = async (req: Request, res: Response) => {
+  return res.status(200).json({
+    success: true,
+    message: "Signed out successfully",
+  });
+};
+
 export const authController = {
   createUser,
-  loginUser
+  loginUser,
+  signOut
 };
