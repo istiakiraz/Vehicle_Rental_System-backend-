@@ -10,4 +10,4 @@ router.put("/:id", auth("admin", "customer"), userController.updateUser);
 router.delete("/:id", auth("admin"), userController.deleteUser);
 
 
-export const userRoute = router;
+export const userRoutes = router;
