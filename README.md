@@ -92,6 +92,7 @@ All endpoints are prefixed with `/api/v1`.
 ### 🔑 Authentication (`/api/v1/auth`)
 - **`POST /api/v1/auth/signup`** – Register a new user (`customer` or `admin`).
 - **`POST /api/v1/auth/signin`** – Authenticate user and receive a JWT authorization token.
+- **`POST /api/v1/auth/signout`** – Delete the JWT token (`customer` or `admin`).
 
 ### 🚗 Vehicle Management (`/api/v1/vehicles`)
 - **`GET /api/v1/vehicles`** – Retrieve all vehicles (Public).
